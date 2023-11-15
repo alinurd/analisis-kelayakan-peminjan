@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+Route::middleware('auth', 'role:admin')->group(function () {
+    
+    Route::get('/parameters', [ParameterController::class, 'index'])->name('parameter.index');
+    Route::get('/parameter', [ParameterController::class, 'edit'])->name('parameter.edit');
+    Route::patch('/parameter', [ParameterController::class, 'update'])->name('parameter.update');
+    Route::delete('/parameter', [ParameterController::class, 'destroy'])->name('parameter.destroy');
 });
 
 Route::get('admin', function () {
