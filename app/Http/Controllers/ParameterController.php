@@ -59,8 +59,8 @@ class ParameterController extends Controller
         // Create a new parameter
         Parameter::create($validatedData);
 
-        // Redirect to a relevant page (e.g., index or show)
-        return redirect()->route('parameters')->with('success', 'Parameter created successfully');
+        session()->flash('success', 'Parameter Created successfully');
+        return redirect()->route('parameters');
     }
 
 
@@ -77,6 +77,7 @@ class ParameterController extends Controller
      */
     public function edit(Parameter $parameter)
     {
+        // dd($parameter);
         // $parameter = Parameter::find($id);
 
         return inertia('Parameter/Edit', [
@@ -105,8 +106,8 @@ class ParameterController extends Controller
         ]);
 
         // Update the parameter
-        $parameter->update($validatedData);
-
+        // $parameter->update($validatedData);
+dd($parameter->update($validatedData));
         // Redirect to a relevant page (e.g., index or show)
         session()->flash('success', 'Parameter updated successfully');
         return redirect()->route('parameters');
