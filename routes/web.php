@@ -30,6 +30,36 @@ Route::middleware('auth')->group(function () use ($modules) {
 
  
  /*
+ foreach ($modules as $mdl) {
+        // Use the string directly without ::class
+        $controllerClass = 'App\\Http\\Controllers\\' . $mdl['controller'];
+
+        // Define routes
+        Route::get('/' . $mdl['route'], [$controllerClass, 'index'])
+        ->name($mdl['route'])
+        ->middleware('can:view,' . $controllerClass); // Adjust this line based on your permission logic
+
+        Route::get('/' . $mdl['route'] . '/create', [$controllerClass, 'create'])
+        ->name($mdl['route'] . '.create')
+            ->middleware('can:create,' . $controllerClass);
+
+        Route::get('/' . $mdl['route'] . '/{data}/edit', [$controllerClass, 'edit'])
+        ->name($mdl['route'] . '.edit')
+        ->middleware('can:edit,' . $controllerClass);
+
+        Route::put('/' . $mdl['route'] . '/{data}', [$controllerClass, 'update'])
+        ->name($mdl['route'] . '.update')
+            ->middleware('can:update,' . $controllerClass);
+
+        Route::delete('/' . $mdl['route'] . '/{data}', [$controllerClass, 'destroy'])
+        ->name($mdl['route'] . '.destroy')
+            ->middleware('can:destroy,' . $controllerClass);
+
+        Route::post('/' . $mdl['route'], [$controllerClass, 'store'])
+        ->name($mdl['route'] . 'store')
+        ->middleware('can:store,' . $controllerClass);
+    }
+    
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
