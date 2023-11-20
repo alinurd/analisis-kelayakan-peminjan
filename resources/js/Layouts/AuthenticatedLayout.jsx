@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
-
+import axios from 'axios'; // Import axios for API requests
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
+    const [modules, setModules] = useState([]);
+    useEffect(() => {
+        // Fetch data from the server when the component mounts
+        axios.get('/api/modules') // Assuming a RESTful API endpoint for modules
+            .then(response => {
+                console.log(response)
+                setModules(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching modules:', error);
+            });
+    }, []); // Empty dependency array ensures the effect runs once after the initial render
+    // console.log(modules)
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="bg-white border-b border-gray-100">
@@ -26,14 +38,11 @@ export default function Authenticated({ user, header, children }) {
                                 </NavLink>
                             </div>
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('parameters')} active={route().current('parameter')}>
-                                    Parameter
+                            {modules.map((module) => (
+                                <NavLink key={module.id} href={route(module.route)}>
+                                    {module.title}
                                 </NavLink>
-                            </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('modules')} active={route().current('modules')}>
-                                    Modules
-                                </NavLink>
+                            ))}
                             </div>
                         </div>
 

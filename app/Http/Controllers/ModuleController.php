@@ -126,4 +126,11 @@ class ModuleController extends Controller
         // Redirect to the index page or return a response as needed
         return redirect()->route('modules');
     }
+    public function api()
+    {
+        $modules = Modules::all(); // Assuming you have a "Module" model
+
+        return response()->json($modules);
+    }
+
 }
