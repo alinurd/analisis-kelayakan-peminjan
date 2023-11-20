@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,45 +12,42 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
+Route::get('/post', function () {
+    return Inertia::render('Posts/PostComponent', []);
+});
+Route::get('/new', function () {
+    return Inertia::render('Posts/NewComponent', []);
+});
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+ 
 Route::middleware('auth')->group(function () {
+    Route::get('/parameters', [ParameterController::class, 'index'])->name('parameters');
+    Route::get('/parameters/create', [ParameterController::class, 'create'])->name('parameters.create');
+     Route::get('/parameters/{parameter}/edit', [ParameterController::class, 'edit'])->name('parameters.edit');
+     Route::put('/parameters/{parameter}', [ParameterController::class, 'update'])->name('parameters.update');
+    Route::delete('/parameters/{parameter}', [ParameterController::class, 'destroy'])->name('parameters.destroy');
+    Route::post('/parameters/', [ParameterController::class, 'store'])->name('parameters.store');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::middleware('auth', 'role:admin')->group(function () {
-    
-    Route::get('/parameters', [ParameterController::class, 'index'])->name('parameter.index');
-    Route::get('/parameter', [ParameterController::class, 'edit'])->name('parameter.edit');
-    Route::patch('/parameter', [ParameterController::class, 'update'])->name('parameter.update');
-    Route::delete('/parameter', [ParameterController::class, 'destroy'])->name('parameter.destroy');
-});
 
-Route::get('admin', function () {
-    return  "admin";
-    
-})->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
-Route::get('penulis', function () {
-    return  "penulis";
-})->middleware(['auth', 'verified', 'role:penulis|admin'])->name('dashboard');
-
-
-
-Route::get('tulisan', function () {
-    return  view("tulisan");
-})->middleware(['auth', 'verified', 'role_or_permission:lihat-tulisan|admin'])->name('dashboard');
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

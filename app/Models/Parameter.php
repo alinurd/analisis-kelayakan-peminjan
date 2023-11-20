@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Parameter extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'nama',
+        'kode',
+        'jenis',
+        'status',
+    ];
     public function dataAll()
     {
         return Parameter::all();
